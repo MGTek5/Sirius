@@ -6,6 +6,15 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+} from "firebase/firestore";
+
 import toast from "react-hot-toast";
 
 const firebaseConfig = {
@@ -20,11 +29,33 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+const userCollection = collection(db, "users");
+
+const findUser = async (uid) => {
+  const q = query(userCollection, where("uid", "==", uid));
+  const data = await getDocs(q);
+  return data.empty;
+};
+
+const createUser = async (user) => {
+  const exists = await findUser(user.uid);
+  const { email, uid } = user;
+  if (exists) {
+    await addDoc(userCollection, {
+      email,
+      uid,
+    });
+  }
+};
+
 const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async (history) => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
+    await createUser(res.user);
     toast.success(`Welcome back, ${res.user.displayName}!`);
     history.push("/");
   } catch (error) {
@@ -48,4 +79,4 @@ const signInEmailPassword = async (email, password, history) => {
   }
 };
 
-export { app, auth, signInWithGoogle, signInEmailPassword };
+export { app, auth, db, signInWithGoogle, signInEmailPassword };

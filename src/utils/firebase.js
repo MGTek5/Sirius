@@ -6,6 +6,7 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import toast from "react-hot-toast";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBA55mUE8u1oD-hJf8WhywWXyjjKhfAceY",
@@ -25,10 +26,13 @@ const signInWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
     const user = res.user;
+
+    toast.success(`Welcome back, ${user.displayName}!`);
     console.log(user);
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
+  } catch (error) {
+    console.error(error);
+    toast.error("Could not sign in with Google", { position: "top-center" });
+    throw error;
   }
 };
 
@@ -38,7 +42,11 @@ const signInEmailPassword = async (email, password) => {
     const user = res.user;
     console.log(user);
   } catch (error) {
-    alert(error);
+    console.error(error);
+    toast.error("Could not authenticate with given values", {
+      position: "top-center",
+    });
+    throw error;
   }
 };
 

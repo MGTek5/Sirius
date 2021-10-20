@@ -11,8 +11,8 @@ const Login = () => {
             email: "",
             password: ""
         },
-        onSubmit: (values) => {
-            signInEmailPassword(values.email, values.password)
+        onSubmit: async (values) => {
+            await signInEmailPassword(values.email, values.password)
         }
     })
 

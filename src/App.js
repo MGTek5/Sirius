@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import { BrowserRouter } from "react-router-dom";
 import themeContext from "./context/themeContext";
 import userContext from "./context/userContext";
@@ -37,6 +38,7 @@ function App() {
             },
           }}
         >
+          <Toaster />
           <BrowserRouter>
             <Router />
           </BrowserRouter>

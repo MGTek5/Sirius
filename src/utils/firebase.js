@@ -22,13 +22,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-const signInWithGoogle = async () => {
+const signInWithGoogle = async (history) => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
-    const user = res.user;
-
-    toast.success(`Welcome back, ${user.displayName}!`);
-    console.log(user);
+    toast.success(`Welcome back, ${res.user.displayName}!`);
+    history.push("/");
   } catch (error) {
     console.error(error);
     toast.error("Could not sign in with Google", { position: "top-center" });
@@ -36,11 +34,11 @@ const signInWithGoogle = async () => {
   }
 };
 
-const signInEmailPassword = async (email, password) => {
+const signInEmailPassword = async (email, password, history) => {
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
-    const user = res.user;
-    console.log(user);
+    toast.success(`Welcome back, ${res.user.displayName}!`);
+    history.push("/");
   } catch (error) {
     console.error(error);
     toast.error("Could not authenticate with given values", {

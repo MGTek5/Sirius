@@ -1,18 +1,18 @@
 import { signInEmailPassword, signInWithGoogle } from "../utils/firebase";
 import { Link } from "react-router-dom"
 import { useFormik } from "formik"
-
+import { useHistory } from "react-router-dom"
 import Google from "../icons/Google";
 import Button from "../components/Button";
 const Login = () => {
-
+    const history = useHistory()
     const formik = useFormik({
         initialValues: {
             email: "",
             password: ""
         },
         onSubmit: async (values) => {
-            await signInEmailPassword(values.email, values.password)
+            await signInEmailPassword(values.email, values.password, history)
         }
     })
 
@@ -32,7 +32,7 @@ const Login = () => {
                         <Button type="submit" bg="bg-blue-400" hoverBg="bg-blue-500" text="submit" />
                     </form>
                 </div>
-                <Button bg="bg-red-400" hoverBg="bg-red-500" text="Google" onClick={signInWithGoogle} icon={<Google className="h-8 w-auto" />} />
+                <Button bg="bg-red-400" hoverBg="bg-red-500" text="Google" onClick={() => signInWithGoogle(history)} icon={<Google className="h-8 w-auto" />} />
                 <div className="text-right">
                     <Link to="/register">Or create an account</Link>
                 </div>

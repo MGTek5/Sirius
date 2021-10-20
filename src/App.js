@@ -1,24 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { BrowserRouter } from "react-router-dom";
+import themeContext from "./context/themeContext";
+import userContext from "./context/userContext";
+import "./index.css";
+import Router from "./Router";
+import { auth } from "./utils/firebase";
 
 function App() {
+  const [user, setUser] = useState();
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    auth.onAuthStateChanged((change) => {
+      setUser(change);
+    });
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div
+      className={`dark:text-white h-screen w-screen flex flex-col ${
+        theme === "dark" && "dark"
+      }`}
+    >
+      <userContext.Provider
+        value={{
+          user,
+          setUser: (u) => setUser(u),
+          logout: () => auth.signOut(),
+        }}
+      >
+        <themeContext.Provider
+          value={{
+            theme,
+            changeTheme: () => {
+              setTheme(theme === "dark" ? "light" : "dark");
+            },
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <Toaster />
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+          <footer>
+            <div className="bg-gray-400">footer</div>
+          </footer>
+        </themeContext.Provider>
+      </userContext.Provider>
     </div>
   );
 }

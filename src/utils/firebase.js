@@ -1,9 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import toast from "react-hot-toast";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBA55mUE8u1oD-hJf8WhywWXyjjKhfAceY",
   authDomain: "sirius-65eb9.firebaseapp.com",
@@ -15,5 +19,33 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
-export default app;
+const signInWithGoogle = async (history) => {
+  try {
+    const res = await signInWithPopup(auth, googleProvider);
+    toast.success(`Welcome back, ${res.user.displayName}!`);
+    history.push("/");
+  } catch (error) {
+    console.error(error);
+    toast.error("Could not sign in with Google", { position: "top-center" });
+    throw error;
+  }
+};
+
+const signInEmailPassword = async (email, password, history) => {
+  try {
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    toast.success(`Welcome back, ${res.user.displayName}!`);
+    history.push("/");
+  } catch (error) {
+    console.error(error);
+    toast.error("Could not authenticate with given values", {
+      position: "top-center",
+    });
+    throw error;
+  }
+};
+
+export { app, auth, signInWithGoogle, signInEmailPassword };

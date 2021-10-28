@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { BrowserRouter } from "react-router-dom";
+import Header from "./components/Header";
 import themeContext from "./context/themeContext";
 import userContext from "./context/userContext";
 import "./index.css";
@@ -28,7 +29,11 @@ function App() {
         value={{
           user,
           setUser: (u) => setUser(u),
-          logout: () => app.account.deleteSession(),
+          logout: () => {
+            app.account.deleteSessions()
+            setUser(null)
+            toast.success("Succesfully logged out")
+            },
         }}
       >
         <themeContext.Provider
@@ -40,6 +45,7 @@ function App() {
           }}
         >
           <Toaster />
+          <Header />
           <BrowserRouter>
             <Router />
           </BrowserRouter>

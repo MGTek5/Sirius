@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Switch, Route, Redirect } from "react-router-dom"
 import userContext from "./context/userContext";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 
@@ -19,7 +20,7 @@ const Router = () => {
         <Switch>
             <ProtectedRoute path="/" exact={true} component={Home} context={userC} />        
             <Route path="/register" exact={true} component={Register} />
-            
+            <Route path="/login" exact={true} component={Login} />
         </Switch>
     )
 }

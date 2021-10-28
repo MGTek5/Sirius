@@ -5,17 +5,18 @@ import themeContext from "./context/themeContext";
 import userContext from "./context/userContext";
 import "./index.css";
 import Router from "./Router";
-import { auth } from "./utils/firebase";
+import { app } from "./utils/appwrite";
 
 function App() {
   const [user, setUser] = useState();
   const [theme, setTheme] = useState("light");
-
   useEffect(() => {
-    auth.onAuthStateChanged((change) => {
-      setUser(change);
-    });
-  });
+    app.account.get().then((data) => {
+      setUser(data)
+    }).catch(() => {
+      setUser(null)
+    })
+  }, []);
 
   return (
     <div
@@ -27,7 +28,7 @@ function App() {
         value={{
           user,
           setUser: (u) => setUser(u),
-          logout: () => auth.signOut(),
+          logout: () => app.account.deleteSession(),
         }}
       >
         <themeContext.Provider

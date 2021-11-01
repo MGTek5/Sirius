@@ -1,18 +1,10 @@
+import {useEffect} from 'react';
 import { Link, useLocation, useHistory } from "react-router-dom"
 import { useFormik } from "formik"
-import Google from "../icons/Google";
-import Button from "../components/Button";
 import { app } from "../utils/appwrite";
 import {BASE_URL} from "../utils/constants"
 import toast from "react-hot-toast";
-import {Link, useLocation} from 'react-router-dom';
-import {Link, useLocation, useHistory} from 'react-router-dom';
-import {useFormik} from 'formik';
-import {app} from '../utils/appwrite';
-import {BASE_URL} from '../utils/constants';
-import toast from 'react-hot-toast';
 import queryString from 'query-string';
-import {useEffect} from 'react';
 import FormInput from '../components/FormInput';
 const Register = () => {
   const location = useLocation ();

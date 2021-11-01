@@ -4,6 +4,7 @@ import userContext from "./context/userContext";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import SignOut from "./pages/SignOut";
 
 
 const ProtectedRoute = ({path, exact, component, context}) => {
@@ -18,7 +19,8 @@ const Router = () => {
 
     return (
         <Switch>
-            <ProtectedRoute path="/" exact={true} component={Home} context={userC} />        
+            <ProtectedRoute path="/" exact={true} component={Home} context={userC} />
+            <ProtectedRoute path="/auth/signout" exact={true} component={SignOut} context={userC} />  
             <Route path="/register" exact={true} component={Register} />
             <Route path="/login" exact={true} component={Login} />
         </Switch>

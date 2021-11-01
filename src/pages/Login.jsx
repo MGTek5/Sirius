@@ -54,7 +54,6 @@ const Login = () => {
         <img src="/icons/icon-512x512.png" className="h-12 w-12 md:h-24 md:w-24 lg:h-32 lg:w-32 self-center mb-2" alt="logo"/>
           <h2 className="card-title text-xl font-bold text-center">Welcome back to Sirius</h2>
           <p>Sign in using the form below or using another service</p>
-          <p>remove this before prodution</p>
           <form className="flex flex-col" onSubmit={formik.handleSubmit}>
             <FormInput
               labelText="Email"

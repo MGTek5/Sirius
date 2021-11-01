@@ -1,22 +1,28 @@
-import { useContext } from "react"
-import userContext from "../context/userContext"
-import Button from "./Button"
+import {useContext} from 'react';
+import userContext from '../context/userContext';
+import Button from './Button';
 
 const Header = () => {
-	const userC = useContext(userContext)
+  const userC = useContext (userContext);
 
-	return (
-		<header className="">
-			<div className="w-full min-h-8 bg-gray-300 flex items-center justify-between px-8">
-				<h1 className="text-lg font-bold">Sirius</h1>
-				{userC.user !== null ? <div className="justify-self-end">
-					<Button bg="bg-blue-400" hoverBg="bg-blue-500" text="Sign Out" onClick={() => {
-						userC.logout()
-					}} />
-				</div> : null}
-			</div>
-		</header>
-	)
-}
+  return (
+    <header className="">
+      <div className="navbar mb-2 shadow-lg bg-neutral text-neutral-content">
+        <div className="flex-1 px-2 mx-2">
+          <span className="text-lg font-bold">
+            Sirius
+          </span>
+        </div>
+        <div className="flex-none">
+          <div className="avatar">
+            <div className="rounded-full w-10 h-10 m-1">
+              <img src="https://i.pravatar.cc/500?img=32" alt="profile" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
 
-export default Header
+export default Header;

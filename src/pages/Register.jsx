@@ -6,9 +6,8 @@ import { app } from "../utils/appwrite";
 import {BASE_URL} from "../utils/constants"
 import toast from "react-hot-toast";
 import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useHistory} from 'react-router-dom';
 import {useFormik} from 'formik';
-import Google from '../icons/Google';
-import Button from '../components/Button';
 import {app} from '../utils/appwrite';
 import {BASE_URL} from '../utils/constants';
 import toast from 'react-hot-toast';
@@ -17,6 +16,7 @@ import {useEffect} from 'react';
 import FormInput from '../components/FormInput';
 const Register = () => {
   const location = useLocation ();
+  const history = useHistory()
   useEffect (() => {
     const {auth} = queryString.parse (location.search);
     if (auth) {
@@ -39,6 +39,9 @@ const Register = () => {
           values.password,
           values.username
         );
+        await app.account.createSession(values.email, values.password);
+        toast.success(`Welcome to Sirius, ${values.username}`);
+        history.push("/")
       } catch (error) {
         console.log (error);
         toast.error (
@@ -49,7 +52,7 @@ const Register = () => {
   });
 
   return (
-    <main className="flex flex-col justify-center items-center dark:bg-gray-900">
+    <main className="flex flex-col justify-center items-center">
       <div className="card lg:card-side bordered">
         <figure>
           <img
@@ -58,7 +61,7 @@ const Register = () => {
           />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">Welcome to Sirius</h2>
+          <h2 className="card-title text-xl font-bold">Welcome to Sirius</h2>
           <p>Sign up using the form below or using another service</p>
           <form className="flex flex-col" onSubmit={formik.handleSubmit}>
             <FormInput
@@ -73,7 +76,7 @@ const Register = () => {
             <FormInput
               labelText="Username"
               htmlFor="username"
-              inputName="name"
+              inputName="username"
               inputPlaceholder="Username"
               inputValue={formik.values.username}
               onInputChange={formik.handleChange}

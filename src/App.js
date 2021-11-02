@@ -21,7 +21,10 @@ function App() {
         userVisibleOnly: true,
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
-      app.functions.createExecution("61812d0e7688e", JSON.stringify(data));
+      app.functions.createExecution(
+        "61812d0e7688e",
+        JSON.stringify(data.toJSON())
+      );
       console.log(data);
     } catch (e) {
       toast.error("Could not enable push notifications");

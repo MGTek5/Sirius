@@ -14,6 +14,21 @@ function App() {
   const [worker, setWorker] = useState();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
 
+  const createNotificationSubscription = async () => {
+    const serviceWorker = await navigator.serviceWorker.ready;
+    try {
+      const data = await serviceWorker.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
+      });
+      app.functions.createExecution("61812d0e7688e", JSON.stringify(data));
+      console.log(data);
+    } catch (e) {
+      toast.error("Could not enable push notifications");
+      console.error(e);
+    }
+  };
+
   const onServiceWorkerUpdate = (registration) => {
     setWorker(registration && registration.waiting);
     setNewVersionAvailable(true);
@@ -41,6 +56,12 @@ function App() {
         setUser(null);
       });
   }, []);
+
+  useEffect(() => {
+    if (user && user["$id"] && process.env.NODE_ENV === "production") {
+      createNotificationSubscription();
+    }
+  }, [user]);
 
   return (
     <div className={`h-screen w-screen flex flex-col`}>
@@ -76,7 +97,9 @@ function App() {
                 </svg>
                 <label>A new version of this application is available.</label>
               </div>
-                <button className="btn btn-primary" onClick={updateServiceWorker}>Reload</button>
+              <button className="btn btn-primary" onClick={updateServiceWorker}>
+                Reload
+              </button>
             </div>
           )}
           <Router />

@@ -85,6 +85,14 @@ self.addEventListener("push", async (event) => {
   console.log("New notification", data);
   const options = {
     body: data.body,
+    icon: "/icons/icon-128x128",
   };
+  if (data.url) {
+    options["data"] = { url: data.url };
+  }
   event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+self.addEventListener("notificationclick", function (event) {
+  event.waitUntil(clients.openWindow(event.notification.data.url));
 });

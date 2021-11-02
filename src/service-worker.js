@@ -93,6 +93,14 @@ self.addEventListener("push", async (event) => {
   event.waitUntil(self.registration.showNotification(data.title, options));
 });
 
-self.addEventListener("notificationclick", function (event) {
-  event.waitUntil(clients.openWindow(event.notification.data.url));
-});
+self.addEventListener(
+  "notificationclick",
+  function (event) {
+    if (event.notification.data.url) {
+      clients.openWindow(event.notification.data.url); //which we got from above
+    } else {
+      clients.openWindow("https://www.example.com");
+    }
+  },
+  false
+);

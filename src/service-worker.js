@@ -96,7 +96,7 @@ self.addEventListener("push", async (event) => {
 self.addEventListener(
   "notificationclick",
   function (event) {
-    if (event.notification.data.url) {
+    if (event.notification?.data?.url) {
       clients.openWindow(event.notification.data.url); //which we got from above
     } else {
       clients.openWindow("https://www.example.com");

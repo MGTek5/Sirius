@@ -80,8 +80,8 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
-self.addEventListener("push", (event) => {
-  const data = event.data;
+self.addEventListener("push", async (event) => {
+  const data = await event.data.json();
   console.log("New notification", data);
   const options = {
     body: data.body,

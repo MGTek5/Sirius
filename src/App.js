@@ -17,6 +17,9 @@ function App() {
   const createNotificationSubscription = async () => {
     const serviceWorker = await navigator.serviceWorker.ready;
     try {
+      if (Notification.permission === "granted") {
+        return;
+      }
       const data = await serviceWorker.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,

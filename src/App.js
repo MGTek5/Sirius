@@ -15,6 +15,9 @@ function App() {
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
 
   const createNotificationSubscription = async () => {
+    if (process.env.NODE_ENV === "development") {
+      return;
+    }
     const serviceWorker = await navigator.serviceWorker.ready;
     try {
       if (
@@ -66,18 +69,13 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    if (user && user["$id"] && process.env.NODE_ENV === "production") {
-      createNotificationSubscription();
-    }
-  }, [user]);
-
   return (
     <div className={`h-screen w-screen flex flex-col`}>
       <userContext.Provider
         value={{
           user,
           setUser: (u) => setUser(u),
+          askForPermission: createNotificationSubscription,
           logout: () => {
             app.account.deleteSessions();
             setUser(null);

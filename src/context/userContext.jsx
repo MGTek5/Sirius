@@ -3,7 +3,8 @@ import { createContext } from "react";
 const userContext = createContext({
     user: {},
     logout: () => { },
-    setUser: (u) => { }
+    setUser: (u) => { },
+    askForPermission: () => []
 })
 
 export default userContext

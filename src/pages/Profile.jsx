@@ -43,7 +43,7 @@ const Profile = () => {
 
                             }
                             {
-                                Notification.permission === "default" && <button className="btn btn-primary">
+                                Notification.permission === "default" && <button className="btn btn-primary" onClick={userC.askForPermission}>
                                     Activate notifications
                                 </button>
                             }

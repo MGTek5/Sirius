@@ -1,8 +1,9 @@
 import mapbox from "mapbox-gl"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {app} from "../utils/appwrite"
 import { POSITION_COLLECTION } from "../utils/constants";
+import { useHistory } from "react-router";
 
 mapbox.accessToken = "pk.eyJ1IjoibWF0ZmlyZTE5OTkiLCJhIjoiY2t2anA4eGVmMDd0aDMzb3U1M2s0cWp6aSJ9.J6uwIZao8WEhN2An1pi76Q"
 
@@ -11,19 +12,32 @@ mapbox.accessToken = "pk.eyJ1IjoibWF0ZmlyZTE5OTkiLCJhIjoiY2t2anA4eGVmMDd0aDMzb3U
 const Home = () => {
 	const mapContainer = useRef(null);
 	const map = useRef()
-	const IssPosition = useRef(new mapbox.Marker())
+	const marker = useRef()
+	const history = useHistory()
+	const IssPosition = useRef(new mapbox.Marker(
+		{onclick: () => {
+			history.push(`/details/${currentIss.timestamp}`)
+		}}
+	))
+	const [currentIss, setCurrentIss] = useState()
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		if (map.current) return;
 		map.current = new mapbox.Map({
 			container: mapContainer.current,
 			center: { lat: "46.56667", lon: "3.33333" },
-			zoom: 9,
+			zoom: 2,
 			style: 'mapbox://styles/mapbox/dark-v10',
 
 
 		})
-		IssPosition.current.setLngLat({lat: 46.56667, lon: 3.33333}).addTo(map.current)
+		IssPosition.current = new mapbox.Marker(marker.current)
+		app.database.listDocuments(POSITION_COLLECTION, [], 1, 0, "timestamp", "DESC").then((value) => {
+			IssPosition.current.setLngLat({lat:value.documents[0]["latitude"], lon:value.documents[0]["longitude"]}).addTo(map.current)
+			setCurrentIss(value.documents[0])
+			setLoading(false)
+		})
 	})
 
 	useEffect(() => {
@@ -34,11 +48,20 @@ const Home = () => {
 	const onDocumentsUpdate = (payload) => {
 		console.log(payload)
 		if (payload.event === "database.documents.create") {
+			IssPosition.current.setLngLat({lon:payload.payload.longitude, lat:payload.payload.latitude})
+			setCurrentIss(payload.payload)
 		}
 	}
 
 	return (
 		<main>
+{ loading &&			<div className="w-screen h-screen bg-black flex flex-col absolute top-0 right-0 z-50">
+				<h1>Loading</h1>
+			</div>}
+			<div ref={marker} className="h-12 w-12 bg-cover" style={{backgroundImage:"url('/assets/satellite.png')"}}  onClick={() => {
+							history.push(`/details/${currentIss.timestamp}`)
+
+			}}></div>
 			<div className="h-full w-full" ref={mapContainer} />
 		</main>
 	)

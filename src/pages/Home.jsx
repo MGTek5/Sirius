@@ -1,5 +1,6 @@
 import mapbox from "mapbox-gl"
 import { useEffect, useRef, useState } from "react"
+import { BallTriangle  } from 'svg-loaders-react'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {app} from "../utils/appwrite"
 import { POSITION_COLLECTION } from "../utils/constants";
@@ -36,6 +37,7 @@ const Home = () => {
 		app.database.listDocuments(POSITION_COLLECTION, [], 1, 0, "timestamp", "DESC").then((value) => {
 			IssPosition.current.setLngLat({lat:value.documents[0]["latitude"], lon:value.documents[0]["longitude"]}).addTo(map.current)
 			setCurrentIss(value.documents[0])
+			map.current.setCenter({lat:value.documents[0]["latitude"], lon:value.documents[0]["longitude"]})
 			setLoading(false)
 		})
 	})
@@ -46,17 +48,19 @@ const Home = () => {
 	})
 
 	const onDocumentsUpdate = (payload) => {
-		console.log(payload)
 		if (payload.event === "database.documents.create") {
 			IssPosition.current.setLngLat({lon:payload.payload.longitude, lat:payload.payload.latitude})
+			map.current.setCenter({lon:payload.payload.longitude, lat:payload.payload.latitude})
 			setCurrentIss(payload.payload)
 		}
 	}
 
 	return (
 		<main>
-{ loading &&			<div className="w-screen h-screen bg-black flex flex-col absolute top-0 right-0 z-50">
-				<h1>Loading</h1>
+{ loading &&			<div className="w-screen h-screen bg-black flex flex-col justify-center items-center absolute top-0 right-0 z-50">
+
+				<h1>Fetching latest data, please wait...</h1>
+				<BallTriangle  />
 			</div>}
 			<div ref={marker} className="h-12 w-12 bg-cover" style={{backgroundImage:"url('/assets/satellite.png')"}}  onClick={() => {
 							history.push(`/details/${currentIss.timestamp}`)

@@ -6,9 +6,6 @@ import {app} from "../utils/appwrite"
 import { POSITION_COLLECTION } from "../utils/constants";
 import { useHistory } from "react-router";
 
-
-
-
 const Home = () => {
 	mapbox.accessToken = "pk.eyJ1IjoibWF0ZmlyZTE5OTkiLCJhIjoiY2t2anA4eGVmMDd0aDMzb3U1M2s0cWp6aSJ9.J6uwIZao8WEhN2An1pi76Q"
 	const mapContainer = useRef(null);

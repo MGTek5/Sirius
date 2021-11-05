@@ -42,7 +42,7 @@ const Login = () => {
   });
 
   return (
-    <main className="flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="card lg:card-side bordered">
         <figure>
           <img
@@ -137,7 +137,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

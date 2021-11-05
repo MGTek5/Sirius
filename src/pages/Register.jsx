@@ -44,7 +44,7 @@ const Register = () => {
   });
 
   return (
-    <main className="flex flex-col justify-center items-center">
+    <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="card lg:card-side bordered">
         <figure>
           <img
@@ -147,7 +147,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

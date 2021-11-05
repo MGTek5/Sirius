@@ -12,7 +12,7 @@ const SignOut = () => {
 		})
 	})
   return (
-    <main className="bg-base-200">
+    <div className="bg-base-200 w-full h-full">
       <div className="hero min-h-full">
         <div className="text-center hero-content">
           <div className="max-w-md">
@@ -25,7 +25,7 @@ const SignOut = () => {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

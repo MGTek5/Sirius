@@ -88,6 +88,30 @@ const Details = () => {
               </div>
             ))}
           </div>
+          <div className="w-full px-4">
+            <button
+              disabled={!navigator.share}
+              className={`btn btn-primary btn-block ${
+                !navigator.share && "btn-disabled"
+              }`}
+              onClick={() => {
+                navigator
+                  .share({
+                    title: "Sirius",
+                    text: "The ISS was right here!",
+                    url: `https://sirius.nirah.tech/details/${timestamp}`,
+                  })
+                  .then(() => {
+                    toast.success("Shared!");
+                  })
+                  .catch(() => {
+                    toast.error("Something went wrong while trying to share");
+                  });
+              }}
+            >
+              Share this page
+            </button>
+          </div>
         </div>
       </div>
     </div>

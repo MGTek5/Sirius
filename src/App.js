@@ -109,7 +109,9 @@ function App() {
               </button>
             </div>
           )}
+          <main>
           <Router />
+            </main>
           <Footer />
         </BrowserRouter>
       </userContext.Provider>

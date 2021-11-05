@@ -6,8 +6,7 @@ const Profile = () => {
     const userC = useContext(userContext);
 
     return (
-
-        <main className="flex flex-col justify-center items-center">
+        <div className="h-full w-full flex flex-col justify-center items-center">
             <div className="card lg:card-side bordered">
                 <figure>
                     <img src={app.avatars.getInitials(userC?.user?.name || "anon")} alt="profile initials" />
@@ -52,7 +51,7 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-        </main >
+        </div >
     )
 }
 

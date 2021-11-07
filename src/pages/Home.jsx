@@ -55,7 +55,7 @@ const Home = () => {
       onDocumentsUpdate
     );
 
-	return unsub;
+    return unsub;
   });
 
   const onDocumentsUpdate = (payload) => {
@@ -74,9 +74,8 @@ const Home = () => {
 
   return (
     <div className="h-full w-full">
-      {loading && (
-		  <LoadingScreen text="Fetching latest data, please wait..."/>
-      )}
+      {loading && <LoadingScreen text="Fetching latest data, please wait..." />}
+
       <div
         ref={marker}
         className="h-12 w-12 bg-cover"

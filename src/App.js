@@ -13,6 +13,7 @@ function App() {
   const [user, setUser] = useState();
   const [worker, setWorker] = useState();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
+  const [isOnline, setIsOnline] = useState(true)
 
   const createNotificationSubscription = async () => {
     if (process.env.NODE_ENV === "development") {
@@ -68,6 +69,29 @@ function App() {
         setUser(null);
       });
   }, []);
+
+  useEffect(() => {
+    const online = window.addEventListener("online", () => handleOnlineChange(true))
+    const offline = window.addEventListener("offline", () => handleOnlineChange(false))
+
+    return(() => {
+      window.removeEventListener("offline", offline)
+      window.removeEventListener("online", online)
+    })
+  })
+
+  const handleOnlineChange = (status) => {
+    if (isOnline !== status) {
+      console.log(status, isOnline)
+      if (status) {
+        toast.success("You're back online! We'll patch you back in")
+      } else {
+        toast.error("You appear to be offline, some functionalities might not work")
+      }
+      setIsOnline(!isOnline)
+    }
+  }
+
 
   return (
     <div className={`h-screen w-screen flex flex-col`}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BrowserRouter } from "react-router-dom";
+import {useBooleanState, usePrevious} from 'webrix/hooks';
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import userContext from "./context/userContext";
@@ -13,7 +14,8 @@ function App() {
   const [user, setUser] = useState();
   const [worker, setWorker] = useState();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
-  const [isOnline, setIsOnline] = useState(true)
+  const {value: online, setTrue: setOnline, setFalse: setOffline} = useBooleanState(navigator.onLine);
+  const oldOnline = usePrevious(online)
 
   const createNotificationSubscription = async () => {
     if (process.env.NODE_ENV === "development") {
@@ -71,26 +73,24 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const online = window.addEventListener("online", () => handleOnlineChange(true))
-    const offline = window.addEventListener("offline", () => handleOnlineChange(false))
+    window.addEventListener("online", setOnline)
+    window.addEventListener("offline", setOffline)
 
     return(() => {
-      window.removeEventListener("offline", offline)
-      window.removeEventListener("online", online)
+      window.removeEventListener("offline", setOffline)
+      window.removeEventListener("online", setOnline)
     })
-  })
+  }, [setOffline, setOnline])
 
-  const handleOnlineChange = (status) => {
-    if (isOnline !== status) {
-      console.log(status, isOnline)
-      if (status) {
+  useEffect(() => {
+    if (online !== oldOnline) {
+      if (online) {
         toast.success("You're back online! We'll patch you back in")
       } else {
         toast.error("You appear to be offline, some functionalities might not work")
       }
-      setIsOnline(!isOnline)
     }
-  }
+  }, [online, oldOnline])
 
 
   return (

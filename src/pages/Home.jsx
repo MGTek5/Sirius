@@ -78,7 +78,7 @@ const Home = () => {
 
       <div
         ref={marker}
-        className="h-12 w-12 bg-cover"
+        className="h-12 w-12 bg-cover cursor-pointer"
         style={{ backgroundImage: "url('/assets/satellite.png')" }}
         onClick={() => {
           history.push(`/details/${currentIss.timestamp}`);

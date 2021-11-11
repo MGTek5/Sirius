@@ -90,23 +90,32 @@ const Details = () => {
           </div>
           <div className="w-full px-4">
             <button
-              disabled={!navigator.share}
-              className={`btn btn-primary btn-block ${
-                !navigator.share && "btn-disabled"
-              }`}
+              className={`btn btn-primary btn-block`}
               onClick={() => {
-                navigator
-                  .share({
-                    title: "Sirius",
-                    text: "The ISS was right here!",
-                    url: `https://sirius.nirah.tech/details/${timestamp}`,
+                if (navigator.share) {
+                  navigator
+                    .share({
+                      title: "Sirius",
+                      text: "The ISS was right here!",
+                      url: `https://sirius.nirah.tech/details/${timestamp}`,
+                    })
+                    .then(() => {
+                      toast.success("Shared!");
+                    })
+                    .catch(() => {
+                      toast.error("Something went wrong while trying to share");
+                    });
+                } else {
+                  navigator.permissions.query({name:"clipboard-write"}).then((result) => {
+                    if (result.state === "granted" || result.state === "prompt") {
+                      navigator.clipboard.writeText(`https://sirius.nirah.tech/details/${timestamp}`).then(() => {
+                        toast.success("Copied page url to clipboard")
+                      }).catch(() => {
+                        toast.error("Something prevented copying to clipboard")
+                      })
+                    }
                   })
-                  .then(() => {
-                    toast.success("Shared!");
-                  })
-                  .catch(() => {
-                    toast.error("Something went wrong while trying to share");
-                  });
+                }
               }}
             >
               Share this page

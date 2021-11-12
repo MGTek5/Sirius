@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import userContext from "../context/userContext";
 import { app } from "../utils/appwrite";
-import { GENERAL_COLLECTION, MAPBOX_TOKEN, POSITION_COLLECTION } from "../utils/constants";
+import { MAPBOX_TOKEN, POSITION_COLLECTION, USER_POSITION_COLLECTION } from "../utils/constants";
 
 const Details = () => {
   const { timestamp } = useParams();
@@ -125,13 +125,11 @@ const Details = () => {
           </div>
           <div className="w-full mt-4 px-4">
               <button disabled={!userC.user} className="btn btn-block btn-info" onClick={async() => {
-                const docs = await app.database.listDocuments(GENERAL_COLLECTION, [`user=${userC.user["$id"]}`], 1)
-                const doc = docs.documents[0]
-                await app.database.updateDocument(GENERAL_COLLECTION, doc["$id"], {
+                await app.database.createDocument(USER_POSITION_COLLECTION, {
                   user: userC.user["$id"],
-                  keys: doc.keys || [],
-                  coords: doc.coords ? [...doc.coords, JSON.stringify({lat:data?.latitude, lon:data?.longitude})] : [JSON.stringify({lat:data?.latitude, lon:data?.longitude})]
-                })
+                  latitude:data?.latitude,
+                  longitude:data?.longitude
+                }, ["role:member"], ["role:member"])
                 toast.success("Tracking point added succesfully")
               }}>
                 Track this position

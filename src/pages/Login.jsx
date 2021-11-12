@@ -86,7 +86,6 @@ const Login = () => {
           <h4 className="mb-2 mt-4">Or use an identity provider below</h4>
           <button
             className="btn"
-            disabled
             onClick={() => {
               app.account.createOAuth2Session (
                 'google',
@@ -130,7 +129,6 @@ const Login = () => {
             Google
           </button>
           <button
-            disabled
             className="btn mt-2"
             onClick={() => {
               app.account.createOAuth2Session (

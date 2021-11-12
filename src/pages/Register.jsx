@@ -95,7 +95,6 @@ const Register = () => {
           </form>
           <h4 className="mb-2 mt-4">Or use an identity provider below</h4>
           <button
-            disabled
             className="btn"
             onClick={() => {
               app.account.createOAuth2Session (
@@ -140,7 +139,6 @@ const Register = () => {
             Google
           </button>
           <button
-            disabled
             className="btn mt-2"
             onClick={() => {
               app.account.createOAuth2Session (

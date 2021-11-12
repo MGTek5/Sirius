@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import SignOut from "./pages/SignOut";
+import TrackMe from "./pages/TrackMe";
 
 const ProtectedRoute = ({ path, exact, component, context }) => {
   if (context.user !== null) {
@@ -33,6 +34,11 @@ const Router = () => {
         component={Profile}
         context={userC}
       />
+      <ProtectedRoute
+        path="/track"
+        exact={true}
+        component={TrackMe}
+        context={userC} />
       <Route path="/details/:timestamp" exact={true} component={Details} />
       <Route path="/register" exact={true} component={Register} />
       <Route path="/login" exact={true} component={Login} />

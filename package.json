@@ -9,6 +9,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "appwrite": "^4.0.4",
+    "axios": "^0.24.0",
     "daisyui": "^1.16.0",
     "formik": "^2.2.9",
     "mapbox-gl": "^2.5.1",

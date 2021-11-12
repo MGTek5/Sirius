@@ -34,8 +34,8 @@ function App() {
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
       app.functions.createExecution(
-        "61812d0e7688e",
-        JSON.stringify(data.toJSON())
+        "618e9e9555f4c",
+        JSON.stringify({user:user["$id"], key: JSON.stringify(data.toJSON())})
       );
       console.log(data);
     } catch (e) {

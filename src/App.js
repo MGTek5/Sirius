@@ -38,7 +38,11 @@ function App() {
         user:user["$id"],
         key: JSON.stringify(data.toJSON())
       })
-      console.log(data);
+/*       app.functions.createExecution("", JSON.stringify({
+        user:user["$id"],
+        title:"",
+        text:""
+      })) */
     } catch (e) {
       toast.error("Could not enable push notifications");
       console.error(e);

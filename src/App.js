@@ -9,6 +9,7 @@ import "./index.css";
 import Router from "./Router";
 import { app } from "./utils/appwrite";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { PUSH_COLLECTION } from "./utils/constants";
 
 function App() {
   const [user, setUser] = useState();
@@ -33,10 +34,10 @@ function App() {
         userVisibleOnly: true,
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
-      app.functions.createExecution(
-        "618e9e9555f4c",
-        JSON.stringify({user:user["$id"], key: JSON.stringify(data.toJSON())})
-      );
+      app.database.createDocument(PUSH_COLLECTION, {
+        user:user["$id"],
+        key: JSON.stringify(data.toJSON())
+      })
       console.log(data);
     } catch (e) {
       toast.error("Could not enable push notifications");

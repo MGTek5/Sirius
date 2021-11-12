@@ -1,13 +1,15 @@
 import mapbox from "mapbox-gl";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
+import userContext from "../context/userContext";
 import { app } from "../utils/appwrite";
-import { MAPBOX_TOKEN, POSITION_COLLECTION } from "../utils/constants";
+import { MAPBOX_TOKEN, POSITION_COLLECTION, USER_POSITION_COLLECTION } from "../utils/constants";
 
 const Details = () => {
   const { timestamp } = useParams();
+  const userC = useContext(userContext);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState();
   const mapContainer = useRef(null);
@@ -90,27 +92,48 @@ const Details = () => {
           </div>
           <div className="w-full px-4">
             <button
-              disabled={!navigator.share}
-              className={`btn btn-primary btn-block ${
-                !navigator.share && "btn-disabled"
-              }`}
+              className={`btn btn-primary btn-block`}
               onClick={() => {
-                navigator
-                  .share({
-                    title: "Sirius",
-                    text: "The ISS was right here!",
-                    url: `https://sirius.nirah.tech/details/${timestamp}`,
+                if (navigator.share) {
+                  navigator
+                    .share({
+                      title: "Sirius",
+                      text: "The ISS was right here!",
+                      url: `https://sirius.nirah.tech/details/${timestamp}`,
+                    })
+                    .then(() => {
+                      toast.success("Shared!");
+                    })
+                    .catch(() => {
+                      toast.error("Something went wrong while trying to share");
+                    });
+                } else {
+                  navigator.permissions.query({name:"clipboard-write"}).then((result) => {
+                    if (result.state === "granted" || result.state === "prompt") {
+                      navigator.clipboard.writeText(`https://sirius.nirah.tech/details/${timestamp}`).then(() => {
+                        toast.success("Copied page url to clipboard")
+                      }).catch(() => {
+                        toast.error("Something prevented copying to clipboard")
+                      })
+                    }
                   })
-                  .then(() => {
-                    toast.success("Shared!");
-                  })
-                  .catch(() => {
-                    toast.error("Something went wrong while trying to share");
-                  });
+                }
               }}
             >
               Share this page
             </button>
+          </div>
+          <div className="w-full mt-4 px-4">
+              <button disabled={!userC.user} className="btn btn-block btn-info" onClick={async() => {
+                await app.database.createDocument(USER_POSITION_COLLECTION, {
+                  user: userC.user["$id"],
+                  latitude:data?.latitude,
+                  longitude:data?.longitude
+                }, ["role:member"], ["role:member"])
+                toast.success("Tracking point added succesfully")
+              }}>
+                Track this position
+              </button>
           </div>
         </div>
       </div>

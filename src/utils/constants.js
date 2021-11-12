@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://sirius.nirah.tech"
+const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : (process.env.DEPLOY_PRIME_URL ? process.env.DEPLOY_PRIME_URL : "https://sirius.nirah.tech")
 const NO_HEADER_FOOTER = [
 	"/register",
 	"/login"

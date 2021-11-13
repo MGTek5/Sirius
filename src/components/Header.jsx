@@ -25,7 +25,7 @@ const Header = () => {
           </span>
         </div>
         <div className="flex-none">
-          <div className="dropdown dropdown-hover dropdown-end">
+        {userC.user &&           <div className="dropdown dropdown-hover dropdown-end">
             <div tabIndex="0" className="avatar">
               <div className="rounded-full w-10 h-10 m-1">
                 <img src={app.avatars.getInitials(userC?.user?.name ?? "anon")} alt="profile" />
@@ -39,10 +39,14 @@ const Header = () => {
                 <Link to="/profile">Profile</Link>
               </li>
               <li>
+                <Link to="/track">Track Me</Link>
+              </li>
+              <li>
                 <Link to="/auth/signout">Sign Out</Link>
               </li>
             </ul>
-          </div>
+          </div>}
+
         </div>
       </div>
     </header>

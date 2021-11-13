@@ -105,7 +105,7 @@ function App() {
                 <label>A new version of this application is available.</label>
               </div>
               <button className="btn btn-primary" onClick={updateServiceWorker}>
-                Reload
+                Reload Here
               </button>
             </div>
           )}

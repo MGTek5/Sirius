@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { BrowserRouter } from "react-router-dom";
-import {useBooleanState, usePrevious} from 'webrix/hooks';
+import { useBooleanState, usePrevious } from "webrix/hooks";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import userContext from "./context/userContext";
@@ -15,8 +15,12 @@ function App() {
   const [user, setUser] = useState();
   const [worker, setWorker] = useState();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
-  const {value: online, setTrue: setOnline, setFalse: setOffline} = useBooleanState(navigator.onLine);
-  const oldOnline = usePrevious(online)
+  const {
+    value: online,
+    setTrue: setOnline,
+    setFalse: setOffline,
+  } = useBooleanState(navigator.onLine);
+  const oldOnline = usePrevious(online);
 
   const createNotificationSubscription = async () => {
     if (process.env.NODE_ENV === "development") {
@@ -35,10 +39,10 @@ function App() {
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
       app.database.createDocument(PUSH_COLLECTION, {
-        user:user["$id"],
-        key: JSON.stringify(data.toJSON())
-      })
-/*       app.functions.createExecution("", JSON.stringify({
+        user: user["$id"],
+        key: JSON.stringify(data.toJSON()),
+      });
+      /*       app.functions.createExecution("", JSON.stringify({
         user:user["$id"],
         title:"",
         text:""
@@ -71,32 +75,38 @@ function App() {
       .get()
       .then((data) => {
         setUser(data);
+        localStorage.setItem("sirius_user", JSON.stringify(data));
       })
       .catch(() => {
-        setUser(null);
+        if (!navigator.onLine && localStorage.getItem("sirius_user")) {
+          setUser(JSON.parse(localStorage.getItem("sirius_user")));
+        } else {
+          setUser(null);
+        }
       });
   }, []);
 
   useEffect(() => {
-    window.addEventListener("online", setOnline)
-    window.addEventListener("offline", setOffline)
+    window.addEventListener("online", setOnline);
+    window.addEventListener("offline", setOffline);
 
-    return(() => {
-      window.removeEventListener("offline", setOffline)
-      window.removeEventListener("online", setOnline)
-    })
-  }, [setOffline, setOnline])
+    return () => {
+      window.removeEventListener("offline", setOffline);
+      window.removeEventListener("online", setOnline);
+    };
+  }, [setOffline, setOnline]);
 
   useEffect(() => {
     if (online !== oldOnline) {
       if (online) {
-        toast.success("You're back online! We'll patch you back in")
+        toast.success("You're back online! We'll patch you back in");
       } else {
-        toast.error("You appear to be offline, some functionalities might not work")
+        toast.error(
+          "You appear to be offline, some functionalities might not work"
+        );
       }
     }
-  }, [online, oldOnline])
-
+  }, [online, oldOnline]);
 
   return (
     <div className={`h-screen w-screen flex flex-col`}>
@@ -139,8 +149,8 @@ function App() {
             </div>
           )}
           <main>
-          <Router />
-            </main>
+            <Router />
+          </main>
           <Footer />
         </BrowserRouter>
       </userContext.Provider>

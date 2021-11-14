@@ -81,6 +81,7 @@ function App() {
         if (!navigator.onLine && localStorage.getItem("sirius_user")) {
           setUser(JSON.parse(localStorage.getItem("sirius_user")));
         } else {
+          localStorage.removeItem("sirius_user");
           setUser(null);
         }
       });

@@ -1,0 +1,9 @@
+{
+    "extends": ["progressive-web-apps"],
+	"ignoredUrls": [
+		{
+			"domain":"/privacy.htlm",
+			"hints":["*"]
+		}
+	]
+}

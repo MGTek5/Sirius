@@ -64,9 +64,15 @@ function App() {
     window.location.reload();
   };
 
+
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       serviceWorkerRegistration.register({ onUpdate: onServiceWorkerUpdate });
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.sync.register("syncUserPositions").then(() => {
+          console.info("Background Sync for userPosition is enabled")
+        })
+      })
     }
   });
 

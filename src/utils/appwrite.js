@@ -25,11 +25,11 @@ const createDocument = async(collectionID, data, read, write) => {
  * 
  * @param {*} data 
  */
-const createPositionRecord = async(data) => {
+const createPositionRecord = async(data, offlineFallback = false) => {
     try {
         await createDocument(USER_POSITION_COLLECTION, data, ["role:member"], ["role:member"])
     } catch (error) {
-        if (navigator.onLine) throw error
+        if (navigator.onLine || !offlineFallback) throw error
         const db = new Dexie("userPosition")
         db.version(1).stores({
             positions: `++id, user, latitude, longitude`

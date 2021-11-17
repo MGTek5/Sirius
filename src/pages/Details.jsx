@@ -4,8 +4,11 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import userContext from "../context/userContext";
-import { app } from "../utils/appwrite";
-import { MAPBOX_TOKEN, POSITION_COLLECTION, USER_POSITION_COLLECTION } from "../utils/constants";
+import { app, createPositionRecord } from "../utils/appwrite";
+import {
+  MAPBOX_TOKEN,
+  POSITION_COLLECTION,
+} from "../utils/constants";
 
 const Details = () => {
   const { timestamp } = useParams();
@@ -108,15 +111,27 @@ const Details = () => {
                       toast.error("Something went wrong while trying to share");
                     });
                 } else {
-                  navigator.permissions.query({name:"clipboard-write"}).then((result) => {
-                    if (result.state === "granted" || result.state === "prompt") {
-                      navigator.clipboard.writeText(`https://sirius.nirah.tech/details/${timestamp}`).then(() => {
-                        toast.success("Copied page url to clipboard")
-                      }).catch(() => {
-                        toast.error("Something prevented copying to clipboard")
-                      })
-                    }
-                  })
+                  navigator.permissions
+                    .query({ name: "clipboard-write" })
+                    .then((result) => {
+                      if (
+                        result.state === "granted" ||
+                        result.state === "prompt"
+                      ) {
+                        navigator.clipboard
+                          .writeText(
+                            `https://sirius.nirah.tech/details/${timestamp}`
+                          )
+                          .then(() => {
+                            toast.success("Copied page url to clipboard");
+                          })
+                          .catch(() => {
+                            toast.error(
+                              "Something prevented copying to clipboard"
+                            );
+                          });
+                      }
+                    });
                 }
               }}
             >
@@ -124,16 +139,20 @@ const Details = () => {
             </button>
           </div>
           <div className="w-full mt-4 px-4">
-              <button disabled={!userC.user} className="btn btn-block btn-info" onClick={async() => {
-                await app.database.createDocument(USER_POSITION_COLLECTION, {
+            <button
+              disabled={!userC.user}
+              className="btn btn-block btn-info"
+              onClick={async () => {
+                await createPositionRecord({
                   user: userC.user["$id"],
-                  latitude:data?.latitude,
-                  longitude:data?.longitude
-                }, ["role:member"], ["role:member"])
-                toast.success("Tracking point added succesfully")
-              }}>
-                Track this position
-              </button>
+                  latitude: data?.latitude,
+                  longitude: data?.longitude,
+                }, true);
+                toast.success("Tracking point added succesfully");
+              }}
+            >
+              Track this position
+            </button>
           </div>
         </div>
       </div>

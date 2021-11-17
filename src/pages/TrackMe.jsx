@@ -1,48 +1,44 @@
-import {useFormik} from 'formik';
-import {useContext, useRef, useEffect} from 'react';
+import { useFormik } from "formik";
+import { useContext, useRef, useEffect } from "react";
 import mapbox from "mapbox-gl";
-import toast from 'react-hot-toast';
-import FormInput from '../components/FormInput';
-import userContext from '../context/userContext';
-import {USER_POSITION_COLLECTION, MAPBOX_TOKEN} from '../utils/constants';
-import {app} from '../utils/appwrite';
-import {getPositionForCity} from '../utils/api';
+import toast from "react-hot-toast";
+import FormInput from "../components/FormInput";
+import userContext from "../context/userContext";
+import { MAPBOX_TOKEN } from "../utils/constants";
+import { createPositionRecord } from "../utils/appwrite";
+import { getPositionForCity } from "../utils/api";
 
 const TrackMe = () => {
-	mapbox.accessToken = MAPBOX_TOKEN;
-  const formik = useFormik ({
+  mapbox.accessToken = MAPBOX_TOKEN;
+  const formik = useFormik({
     initialValues: {
-      city: '',
+      city: "",
     },
-    onSubmit: async values => {
+    onSubmit: async (values) => {
       try {
-        console.log (values);
-        const position = await getPositionForCity (values.city);
-        await app.database.createDocument (
-          USER_POSITION_COLLECTION,
-          {
-            user: userC.user['$id'],
-            latitude: position.lat,
-            longitude: position.lon,
-          },
-          ['role:member'],
-          ['role:member']
-        );
-		positionMap(position)
+        console.log(values);
+        const position = await getPositionForCity(values.city);
+        await createPositionRecord({
+          user: userC.user["$id"],
+          latitude: position.lat,
+          longitude: position.lon,
+        }, true);
+
+        positionMap(position);
       } catch (error) {
-        toast.error ('Something went wrong while getting coordinates for city');
+        toast.error("Something went wrong while getting coordinates for city");
       }
     },
   });
-  const userC = useContext (userContext);
+  const userC = useContext(userContext);
   const mapContainer = useRef(null);
   const map = useRef();
 
   const positionMap = (position) => {
-	map.current.flyTo({
-		center: { lat: position.lat, lon: position.lon }
-	})
-  }
+    map.current.flyTo({
+      center: { lat: position.lat, lon: position.lon },
+    });
+  };
 
   useEffect(() => {
     if (map.current) return;
@@ -57,43 +53,38 @@ const TrackMe = () => {
   return (
     <div className="w-full h-full flex flex-col lg:flex-row flex-wrap">
       <div className="w-full lg:w-2/3">
-        <div className="h-full w-full" ref={mapContainer}>
-		</div>
+        <div className="h-full w-full" ref={mapContainer}></div>
       </div>
       <div className="mt-0 lg:mt-5 lg:flex lg:items-center h-full">
         <div className="card lg:card-side bordered">
           <div className="card-body">
             <h2 className="card-title">Track a Position</h2>
-            <p>
-              do you want to be notified when the ISS is near you ?
-            </p>
+            <p>do you want to be notified when the ISS is near you ?</p>
             <button
               className="btn btn-primary"
               onClick={() => {
                 if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition (
-                    async data => {
-                      await app.database.createDocument (
-                        USER_POSITION_COLLECTION,
-                        {
-                          user: userC.user['$id'],
-                          latitude: data.coords.latitude,
-                          longitude: data.coords.longitude,
-                        },
-                        ['role:member'],
-                        ['role:member']
-                      );
-					  positionMap({lat:data.coords.latitude, lon:data.coords.longitude})
+                  navigator.geolocation.getCurrentPosition(
+                    async (data) => {
+                      await createPositionRecord({
+                        user: userC.user["$id"],
+                        latitude: data.coords.latitude,
+                        longitude: data.coords.longitude,
+                      }, true)
+                      positionMap({
+                        lat: data.coords.latitude,
+                        lon: data.coords.longitude,
+                      });
                     },
                     () => {
-                      toast.error (
-                        'Something went wrong while getting position. You need to enable it for this to work'
+                      toast.error(
+                        "Something went wrong while getting position. You need to enable it for this to work"
                       );
                     }
                   );
                 } else {
-                  toast.error (
-                    'Looks like this device does not support geolocation. Please try another device or use the form below'
+                  toast.error(
+                    "Looks like this device does not support geolocation. Please try another device or use the form below"
                   );
                 }
               }}
@@ -101,7 +92,8 @@ const TrackMe = () => {
               Track Me
             </button>
             <p className="mt-8">
-              Or enter a city below and we'll do our best to figure out where it is
+              Or enter a city below and we'll do our best to figure out where it
+              is
             </p>
             <form onSubmit={formik.handleSubmit}>
               <FormInput

@@ -9,7 +9,7 @@ const Profile = () => {
         <div className="h-full w-full flex flex-col justify-center items-center">
             <div className="card lg:card-side bordered">
                 <figure>
-                    <img src={app.avatars.getInitials(userC?.user?.name || "anon")} alt="profile initials" />
+                    <img src={app.avatars.getInitials(userC?.user?.name || "anon").toString()} alt="profile initials" />
                 </figure>
                 <div className="card-body">
                     <h2 className="card-title text-3xl capitalize">{userC?.user?.name || "anon"}</h2>

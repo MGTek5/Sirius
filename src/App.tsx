@@ -10,10 +10,33 @@ import Router from "./Router";
 import { app } from "./utils/appwrite";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { PUSH_COLLECTION } from "./utils/constants";
+import { Models } from "appwrite";
+
+interface SyncManager {
+  getTags(): Promise<string[]>;
+  register(tag: string): Promise<void>;
+}
+
+declare global {
+  interface ServiceWorkerRegistration {
+    readonly sync: SyncManager;
+  }
+
+  interface SyncEvent extends ExtendableEvent {
+    readonly lastChance: boolean;
+    readonly tag: string;
+  }
+
+  interface ServiceWorkerGlobalScopeEventMap {
+    sync: SyncEvent;
+  }
+}
+
+
 
 function App() {
-  const [user, setUser] = useState();
-  const [worker, setWorker] = useState();
+  const [user, setUser] = useState<Models.User<Models.Preferences>>();
+  const [worker, setWorker] = useState<ServiceWorker>();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
   const {
     value: online,
@@ -39,7 +62,7 @@ function App() {
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
       app.database.createDocument(PUSH_COLLECTION, {
-        user: user["$id"],
+        user: user?.$id,
         key: JSON.stringify(data.toJSON()),
       });
       /*       app.functions.createExecution("", JSON.stringify({
@@ -53,13 +76,13 @@ function App() {
     }
   };
 
-  const onServiceWorkerUpdate = (registration) => {
-    setWorker(registration && registration.waiting);
+  const onServiceWorkerUpdate = (registration: ServiceWorkerRegistration) => {
+    setWorker((registration && registration.waiting) ?? undefined);
     setNewVersionAvailable(true);
   };
 
   const updateServiceWorker = () => {
-    worker && worker.postMessage({ type: "SKIP_WAITING" });
+    worker?.postMessage({ type: "SKIP_WAITING" });
     setNewVersionAvailable(false);
     window.location.reload();
   };
@@ -85,10 +108,10 @@ function App() {
       })
       .catch(() => {
         if (!navigator.onLine && localStorage.getItem("sirius_user")) {
-          setUser(JSON.parse(localStorage.getItem("sirius_user")));
+          setUser(JSON.parse(localStorage.getItem("sirius_user") ?? ""));
         } else {
           localStorage.removeItem("sirius_user");
-          setUser(null);
+          setUser(undefined);
         }
       });
   }, []);
@@ -124,7 +147,7 @@ function App() {
           askForPermission: createNotificationSubscription,
           logout: () => {
             app.account.deleteSessions();
-            setUser(null);
+            setUser(undefined);
             toast.success("Succesfully logged out");
           },
         }}

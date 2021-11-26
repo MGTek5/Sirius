@@ -4,53 +4,61 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 import userContext from "../context/userContext";
-import { app, createPositionRecord } from "../utils/appwrite";
+import { app, createPositionRecord, ISSPosition } from "../utils/appwrite";
 import {
   MAPBOX_TOKEN,
   POSITION_COLLECTION,
 } from "../utils/constants";
 
 const Details = () => {
-  const { timestamp } = useParams();
+  const { timestamp } = useParams<{timestamp:string}>();
   const userC = useContext(userContext);
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState();
-  const mapContainer = useRef(null);
-  const map = useRef();
-  const marker = useRef();
-  const IssPosition = useRef(new mapbox.Marker());
+  const [data, setData] = useState<any>();
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapbox.Map>();
+  const marker = useRef<HTMLDivElement>(null);
+  const IssPosition = useRef<mapbox.Marker>(new mapbox.Marker());
   mapbox.accessToken = MAPBOX_TOKEN;
 
   useEffect(() => {
     if (map.current) return;
-    map.current = new mapbox.Map({
-      container: mapContainer.current,
-      center: { lat: "46.56667", lon: "3.33333" },
-      zoom: 4,
-      style: "mapbox://styles/mapbox/dark-v10",
-    });
+    if (mapContainer.current !== null) {
+      map.current = new mapbox.Map({
+        container: mapContainer.current,
+        center: { lat: 46.56667, lon: 3.33333 },
+        zoom: 4,
+        style: "mapbox://styles/mapbox/dark-v10",
+      });
+    }
   });
 
   useEffect(() => {
-    app.database
-      .listDocuments(POSITION_COLLECTION, [`timestamp=${timestamp}`], 1)
-      .then((value) => {
+    const getPositions = async() => {
+      try {
+        const value = await app.database.listDocuments<ISSPosition>(POSITION_COLLECTION, [`timestamp=${timestamp}`], 1);
         const res = value.documents[0];
         setData({ ...res, onboard: JSON.parse(res.onboard) });
-        IssPosition.current = new mapbox.Marker(marker.current);
-        map.current.setCenter({ lat: res.latitude, lon: res.longitude });
-        IssPosition.current
-          .setLngLat({ lat: res.latitude, lon: res.longitude })
-          .addTo(map.current);
+        if (marker.current !== null) {
+          IssPosition.current = new mapbox.Marker(marker.current);
+        }
+        if (map.current?.setCenter && IssPosition.current !== null) {
+          map.current.setCenter({ lat: res.latitude, lon: res.longitude });
+          IssPosition.current
+            .setLngLat({ lat: res.latitude, lon: res.longitude })
+            .addTo(map.current);
+        }
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
+      } catch (error) {
+        console.error(error);
         toast.error(
           "Could not get data, something must have gone terribly wrong"
         );
         setLoading(false);
-      });
+      }
+    }
+    getPositions()
+
   }, [timestamp]);
 
   return (
@@ -69,7 +77,7 @@ const Details = () => {
       <div className="flex flex-col justify-evenly">
         <div className="text-center">
           <h1 className="font-bold text-xl">
-            {new Date(timestamp * 1000).toLocaleString()}
+            {new Date(parseInt(timestamp) * 1000).toLocaleString()}
           </h1>
           <span>
             {data?.latitude} Lat, {data?.longitude} Lon
@@ -77,14 +85,14 @@ const Details = () => {
         </div>
         <div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-            {data?.onboard.map((e) => (
+            {data?.onboard.map((e: {name: string, craft:string}) => (
               <div
                 className="flex flex-col items-center mx-2 my-2 text-center"
                 key={e.name}
               >
                 <div className="avatar">
                   <div className="mb-4 rounded-full w-24 h-24">
-                    <img src={app.avatars.getInitials(e.name)} alt={e.name} />
+                    <img src={app.avatars.getInitials(e.name).toString()} alt={e.name} />
                   </div>
                 </div>
                 <span>{e.name}</span>
@@ -112,7 +120,7 @@ const Details = () => {
                     });
                 } else {
                   navigator.permissions
-                    .query({ name: "clipboard-write" })
+                    .query({ name: "clipboard-write" as PermissionName })
                     .then((result) => {
                       if (
                         result.state === "granted" ||
@@ -143,12 +151,14 @@ const Details = () => {
               disabled={!userC.user}
               className="btn btn-block btn-info"
               onClick={async () => {
-                await createPositionRecord({
-                  user: userC.user["$id"],
-                  latitude: data?.latitude,
-                  longitude: data?.longitude,
-                }, true);
-                toast.success("Tracking point added succesfully");
+                if (userC.user) {
+                  await createPositionRecord({
+                    user: userC.user.$id,
+                    latitude: data?.latitude,
+                    longitude: data?.longitude,
+                  }, true);
+                  toast.success("Tracking point added succesfully");
+                }
               }}
             >
               Track this position

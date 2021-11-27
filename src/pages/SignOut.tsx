@@ -9,7 +9,7 @@ const SignOut = () => {
     app.account.deleteSessions().then(() => {
       localStorage.removeItem("sirius_user");
       toast.success("Bye Bye");
-      history.push("/login");
+      history.push("/");
     });
   });
   return (

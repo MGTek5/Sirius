@@ -25,14 +25,14 @@ const Header = () => {
           </span>
         </div>
         <div className="flex-none">
-        {userC.user &&           <div className="dropdown dropdown-hover dropdown-end">
-            <div tabIndex="0" className="avatar">
+        {userC.user ?           <div className="dropdown dropdown-hover dropdown-end">
+            <div tabIndex={0} className="avatar">
               <div className="rounded-full w-10 h-10 m-1">
-                <img src={app.avatars.getInitials(userC?.user?.name ?? "anon")} alt="profile" />
+                <img src={app.avatars.getInitials(userC?.user?.name ?? "anon").toString()} alt="profile" />
               </div>
             </div>
             <ul
-              tabIndex="0"
+              tabIndex={0}
               className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52"
             >
               <li>
@@ -45,7 +45,7 @@ const Header = () => {
                 <Link to="/auth/signout">Sign Out</Link>
               </li>
             </ul>
-          </div>}
+          </div> : <button className="btn btn-primary" onClick={() => history.push("/login")}>Sign In</button>}
 
         </div>
       </div>

@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
+import toast from "react-hot-toast";
 import { Switch, Route, Redirect } from "react-router-dom";
-import userContext from "./context/userContext";
+import userContext, { UserContextInterface } from "./context/userContext";
 import Details from "./pages/Details";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -9,11 +10,20 @@ import Register from "./pages/Register";
 import SignOut from "./pages/SignOut";
 import TrackMe from "./pages/TrackMe";
 
-const ProtectedRoute = ({ path, exact, component, context }) => {
+
+interface IProtectedRouteProps {
+  path: string;
+  exact: boolean;
+  context: UserContextInterface;
+  component: React.ComponentType
+}
+
+const ProtectedRoute = ({ path, exact, component, context }: IProtectedRouteProps) => {
   if (context.user !== null) {
     return <Route path={path} exact={exact} component={component} />;
   }
-  return <Redirect to="/login" />;
+  toast.error("You need to be authenticated to view this page")
+  return <Redirect to="/" />;
 };
 
 const Router = () => {
@@ -21,7 +31,7 @@ const Router = () => {
 
   return (
     <Switch>
-      <ProtectedRoute path="/" exact={true} component={Home} context={userC} />
+      <Route path="/" exact={true} component={Home} />
       <ProtectedRoute
         path="/auth/signout"
         exact={true}

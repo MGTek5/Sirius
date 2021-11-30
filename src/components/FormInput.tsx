@@ -4,11 +4,11 @@ interface FormInputProps {
 	htmlFor:string;
 	labelText:string
 	inputName:string;
-	inputType:string;
+	inputType?:string;
 	inputPlaceholder:string;
 	inputValue:any;
 	onInputChange: ChangeEventHandler<HTMLInputElement>;
-	required:boolean;
+	required?:boolean;
 }
 
 const FormInput = ({htmlFor, labelText, inputName, inputType = "text", inputPlaceholder="", inputValue, onInputChange, required=true}: FormInputProps) => {

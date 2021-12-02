@@ -28,6 +28,21 @@
       "sizes": "512x512"
     }
   ],
+  "shortcuts": [{
+    "name":"Show current position",
+    "short_name": "Show ISS",
+    "description":"show the current position of the ISS",
+    "url":"/",
+    "icons": [{ "src": "/assets/satellite.png", "sizes": "144x144" }]
+    },
+    {
+      "name":"Show movement history",
+      "short_name":"History",
+      "description":"See the ISS's movement",
+      "url":"/history",
+      "icons":[{"src":"/assets/stopwatch.png", "sizes":"144x144"}]
+    }
+  ],
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#000000",

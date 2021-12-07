@@ -9,7 +9,7 @@ import "./index.css";
 import Router from "./Router";
 import { app } from "./utils/appwrite";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { PUSH_COLLECTION, CREATE_PUSH_FUNCTION } from "./utils/constants";
+import { CREATE_PUSH_FUNCTION } from "./utils/constants";
 import { Models } from "appwrite";
 
 interface SyncManager {

@@ -9,7 +9,7 @@ import "./index.css";
 import Router from "./Router";
 import { app } from "./utils/appwrite";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { PUSH_COLLECTION } from "./utils/constants";
+import { PUSH_COLLECTION, CREATE_PUSH_FUNCTION } from "./utils/constants";
 import { Models } from "appwrite";
 
 interface SyncManager {
@@ -61,15 +61,7 @@ function App() {
         userVisibleOnly: true,
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
-      app.database.createDocument(PUSH_COLLECTION, {
-        user: user?.$id,
-        key: JSON.stringify(data.toJSON()),
-      });
-      /*       app.functions.createExecution("", JSON.stringify({
-        user:user["$id"],
-        title:"",
-        text:""
-      })) */
+      app.functions.createExecution(CREATE_PUSH_FUNCTION, JSON.stringify({key: JSON.stringify(data.toJSON())}))
     } catch (e) {
       toast.error("Could not enable push notifications");
       console.error(e);

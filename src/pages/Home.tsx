@@ -40,16 +40,23 @@ const Home = () => {
           zoom: 2,
           style: "mapbox://styles/mapbox/dark-v10",
         });
-          IssPosition.current = new mapbox.Marker(marker.current);
-          const lastPosition = await app.database.listDocuments<ISSPosition>(POSITION_COLLECTION, [], 1, 0, "timestamp", "DESC");
-          IssPosition.current
-            .setLngLat({
-              lat: lastPosition.documents[0]["latitude"],
-              lon: lastPosition.documents[0]["longitude"],
-            })
-            .addTo(map.current);
-          setCurrentIss(lastPosition.documents[0]);
-          setLoading(false);
+        IssPosition.current = new mapbox.Marker(marker.current);
+        const lastPosition = await app.database.listDocuments<ISSPosition>(
+          POSITION_COLLECTION,
+          [],
+          1,
+          0,
+          "timestamp",
+          "DESC"
+        );
+        IssPosition.current
+          .setLngLat({
+            lat: lastPosition.documents[0]["latitude"],
+            lon: lastPosition.documents[0]["longitude"],
+          })
+          .addTo(map.current);
+        setCurrentIss(lastPosition.documents[0]);
+        setLoading(false);
       }
     };
     initMapAndPositions();
@@ -80,22 +87,28 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const getPositions = async() => {
+    const getPositions = async () => {
       try {
-        const positions = await app.database.listDocuments<UserPosition>(USER_POSITION_COLLECTION, [`user=${userC.user?.$id}`])
+        const positions = await app.database.listDocuments<UserPosition>(
+          USER_POSITION_COLLECTION,
+          [`user=${userC.user?.$id}`]
+        );
         positions.documents.forEach((e) => {
           if (map.current !== undefined) {
-            new mapbox.Marker().setLngLat({lat:e.latitude, lon:e.longitude}).addTo(map.current).getElement().onclick = () => {
-              toast.error("should redirect to location page: not implemented")
-            }
+            new mapbox.Marker()
+              .setLngLat({ lat: e.latitude, lon: e.longitude })
+              .addTo(map.current)
+              .getElement().onclick = () => {
+              history.push(`/location/${e.$id}`);
+            };
           }
-        })
+        });
       } catch (error) {
-        console.log("could not get user position")
+        console.log("could not get user position");
       }
-    }
-    if (userC.user !== undefined) getPositions()
-  }, [userC, map])
+    };
+    if (userC.user !== undefined) getPositions();
+  }, [userC, map]);
 
   return (
     <div className="h-full w-full">

@@ -28,6 +28,7 @@ const Home = () => {
   useEffect(() => {
     const initMapAndPositions = async () => {
       if (map.current) return;
+      if (!hasInternet) return;
       if (
         mapContainer.current !== null &&
         IssPosition.current !== null &&
@@ -63,7 +64,7 @@ const Home = () => {
       }
     };
     initMapAndPositions();
-  });
+  }, [hasInternet]);
 
   useEffect(() => {
     if (hasInternet) {
@@ -121,7 +122,7 @@ const Home = () => {
         <LoadingScreen text="Fetching latest data, please wait..." />
       )}
       <div />
-      {hasInternet ? (
+      {hasInternet || (!hasInternet && map.current) ? (
         <div
           ref={marker}
           className="h-12 w-12 bg-cover cursor-pointer"

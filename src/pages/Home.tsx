@@ -40,27 +40,16 @@ const Home = () => {
           zoom: 2,
           style: "mapbox://styles/mapbox/dark-v10",
         });
-        IssPosition.current = new mapbox.Marker(marker.current);
-        const lastPosition = await app.database.listDocuments<ISSPosition>(
-          POSITION_COLLECTION,
-          [],
-          1,
-          0,
-          "timestamp",
-          "DESC"
-        );
-        IssPosition.current
-          .setLngLat({
-            lat: lastPosition.documents[0]["latitude"],
-            lon: lastPosition.documents[0]["longitude"],
-          })
-          .addTo(map.current);
-        setCurrentIss(lastPosition.documents[0]);
-        map.current.setCenter({
-          lat: lastPosition.documents[0]["latitude"],
-          lon: lastPosition.documents[0]["longitude"],
-        });
-        setLoading(false);
+          IssPosition.current = new mapbox.Marker(marker.current);
+          const lastPosition = await app.database.listDocuments<ISSPosition>(POSITION_COLLECTION, [], 1, 0, "timestamp", "DESC");
+          IssPosition.current
+            .setLngLat({
+              lat: lastPosition.documents[0]["latitude"],
+              lon: lastPosition.documents[0]["longitude"],
+            })
+            .addTo(map.current);
+          setCurrentIss(lastPosition.documents[0]);
+          setLoading(false);
       }
     };
     initMapAndPositions();
@@ -83,10 +72,6 @@ const Home = () => {
   }) => {
     if (payload.event === "database.documents.create") {
       IssPosition.current.setLngLat({
-        lon: payload.payload.longitude,
-        lat: payload.payload.latitude,
-      });
-      map.current?.setCenter({
         lon: payload.payload.longitude,
         lat: payload.payload.latitude,
       });

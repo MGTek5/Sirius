@@ -113,6 +113,8 @@ const Home = () => {
     if (userC.user) getPositions();
   }, [userC, map]);
 
+  console.log(IssPosition.current);
+
   return (
     <div className="h-full w-full">
       {hasInternet && loading && (

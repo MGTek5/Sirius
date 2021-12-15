@@ -127,7 +127,21 @@ const Home = () => {
           onClick={() => {
             history.push(`/details/${currentIss?.timestamp}`);
           }}
-        ></div>
+        />
+      )}
+      {!hasInternet && (
+        <div className="hero min-h-screen bg-base-200">
+          <div className="text-center hero-content">
+            <div className="max-w-md">
+              <h1 className="mb-5 text-5xl font-bold">Error</h1>
+              <p className="mb-5">
+                We cannot display the exact position of the ISS while you are
+                offline. The page will reload automatically when you are
+                connected to the internet again.
+              </p>
+            </div>
+          </div>
+        </div>
       )}
       <div className="h-full w-full" ref={mapContainer} />
     </div>

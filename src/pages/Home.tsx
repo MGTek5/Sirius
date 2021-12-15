@@ -119,7 +119,7 @@ const Home = () => {
         <LoadingScreen text="Fetching latest data, please wait..." />
       )}
       <div />
-      {hasInternet && (
+      {hasInternet ? (
         <div
           ref={marker}
           className="h-12 w-12 bg-cover cursor-pointer"
@@ -128,8 +128,7 @@ const Home = () => {
             history.push(`/details/${currentIss?.timestamp}`);
           }}
         />
-      )}
-      {!hasInternet && (
+      ) : (
         <div className="hero min-h-screen bg-base-200">
           <div className="text-center hero-content">
             <div className="max-w-md">

@@ -115,7 +115,9 @@ const Home = () => {
 
   return (
     <div className="h-full w-full">
-      {loading && <LoadingScreen text="Fetching latest data, please wait..." />}
+      {hasInternet && loading && (
+        <LoadingScreen text="Fetching latest data, please wait..." />
+      )}
       <div />
       <div
         ref={marker}

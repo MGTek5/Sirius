@@ -80,24 +80,22 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const getPositions = async () => {
-      const positions = await app.database.listDocuments<UserPosition>(
-        USER_POSITION_COLLECTION,
-        [`user=${userC.user?.$id}`]
-      );
-      positions.documents.forEach((e) => {
-        if (map.current !== undefined) {
-          new mapbox.Marker()
-            .setLngLat({ lat: e.latitude, lon: e.longitude })
-            .addTo(map.current)
-            .getElement().onclick = () => {
-            toast.error("should redirect to location page: not implemented");
-          };
-        }
-      });
-    };
-    if (userC.user) getPositions();
-  }, [userC, map]);
+    const getPositions = async() => {
+      try {
+        const positions = await app.database.listDocuments<UserPosition>(USER_POSITION_COLLECTION, [`user=${userC.user?.$id}`])
+        positions.documents.forEach((e) => {
+          if (map.current !== undefined) {
+            new mapbox.Marker().setLngLat({lat:e.latitude, lon:e.longitude}).addTo(map.current).getElement().onclick = () => {
+              toast.error("should redirect to location page: not implemented")
+            }
+          }
+        })
+      } catch (error) {
+        
+      }
+    }
+    if (userC.user !== undefined) getPositions()
+  }, [userC, map])
 
   return (
     <div className="h-full w-full">

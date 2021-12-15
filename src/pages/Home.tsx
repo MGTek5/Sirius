@@ -119,14 +119,16 @@ const Home = () => {
         <LoadingScreen text="Fetching latest data, please wait..." />
       )}
       <div />
-      <div
-        ref={marker}
-        className="h-12 w-12 bg-cover cursor-pointer"
-        style={{ backgroundImage: "url('/assets/satellite.png')" }}
-        onClick={() => {
-          history.push(`/details/${currentIss?.timestamp}`);
-        }}
-      ></div>
+      {hasInternet && (
+        <div
+          ref={marker}
+          className="h-12 w-12 bg-cover cursor-pointer"
+          style={{ backgroundImage: "url('/assets/satellite.png')" }}
+          onClick={() => {
+            history.push(`/details/${currentIss?.timestamp}`);
+          }}
+        ></div>
+      )}
       <div className="h-full w-full" ref={mapContainer} />
     </div>
   );

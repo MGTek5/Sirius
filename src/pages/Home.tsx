@@ -114,8 +114,6 @@ const Home = () => {
     if (userC.user) getPositions();
   }, [userC, map]);
 
-  console.log(marker.current);
-
   return (
     <div className="h-full w-full">
       {hasInternet && loading && (

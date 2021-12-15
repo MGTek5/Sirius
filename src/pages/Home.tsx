@@ -91,7 +91,7 @@ const Home = () => {
           }
         })
       } catch (error) {
-        
+        console.log("could not get user position")
       }
     }
     if (userC.user !== undefined) getPositions()

@@ -1,16 +1,22 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useHistory } from "react-router";
+import userContext from "../context/userContext";
 import { app } from "../utils/appwrite";
 
 const SignOut = () => {
   const history = useHistory();
+  const userC = useContext(userContext)
   useEffect(() => {
-    app.account.deleteSessions().then(() => {
+    const logout = async() => {
+      await app.account.deleteSessions()
       localStorage.removeItem("sirius_user");
+      userC.setUser(undefined);
       toast.success("Bye Bye");
       history.push("/");
-    });
+      
+    }
+    if (userC.user !== undefined) logout()
   });
   return (
     <div className="bg-base-200 w-full h-full">

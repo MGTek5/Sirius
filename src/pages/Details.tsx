@@ -177,9 +177,14 @@ const Details = () => {
                     Track this position
                   </button>
                 ) : (
-                  <button className="btn btn-block btn-info" disabled>
-                    Track this position
-                  </button>
+                  <div
+                    data-tip="You need to sign in to use this functionality"
+                    className="tooltip w-full"
+                  >
+                    <button className="btn btn-block btn-info" disabled>
+                      Track this position
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

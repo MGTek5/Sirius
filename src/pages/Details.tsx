@@ -62,7 +62,7 @@ const Details = () => {
       }
     };
     getPositions();
-  }, [timestamp]);
+  }, [timestamp, hasInternet]);
 
   return (
     <div className="w-full h-full flex flex-col md:flex-row">

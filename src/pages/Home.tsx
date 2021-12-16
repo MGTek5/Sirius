@@ -121,14 +121,17 @@ const Home = () => {
       )}
       <div />
       {hasInternet || (!hasInternet && map.current) ? (
-        <div
-          ref={marker}
-          className="h-12 w-12 bg-cover cursor-pointer"
-          style={{ backgroundImage: "url('/assets/satellite.png')" }}
-          onClick={() => {
-            history.push(`/details/${currentIss?.timestamp}`);
-          }}
-        />
+        <>
+          <div
+            ref={marker}
+            className="h-12 w-12 bg-cover cursor-pointer"
+            style={{ backgroundImage: "url('/assets/satellite.png')" }}
+            onClick={() => {
+              history.push(`/details/${currentIss?.timestamp}`);
+            }}
+          />
+          <div className="h-full w-full" ref={mapContainer} />
+        </>
       ) : (
         <div className="hero min-h-screen bg-base-200">
           <div className="text-center hero-content">
@@ -143,7 +146,6 @@ const Home = () => {
           </div>
         </div>
       )}
-      <div className="h-full w-full" ref={mapContainer} />
     </div>
   );
 };

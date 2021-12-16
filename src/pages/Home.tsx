@@ -133,7 +133,7 @@ const Home = () => {
           <div className="h-full w-full" ref={mapContainer} />
         </>
       ) : (
-        <div className="hero min-h-screen bg-base-200">
+        <div className="hero bg-base-200">
           <div className="text-center hero-content">
             <div className="max-w-md">
               <h1 className="mb-5 text-5xl font-bold">Error</h1>

@@ -93,20 +93,23 @@ function App() {
   });
 
   useEffect(() => {
-    app.account
-      .get()
-      .then((data) => {
-        setUser(data);
-        localStorage.setItem("sirius_user", JSON.stringify(data));
-      })
-      .catch(() => {
+    const getAccount = async () => {
+      try {
+        const account = await app.account.get()
+        setUser(account);
+        localStorage.setItem("sirius_user", JSON.stringify(account));
+
+      } catch(err) {
+        console.log(err)
         if (!navigator.onLine && localStorage.getItem("sirius_user")) {
           setUser(JSON.parse(localStorage.getItem("sirius_user") ?? ""));
         } else {
           localStorage.removeItem("sirius_user");
           setUser(undefined);
         }
-      });
+      }
+    }
+    getAccount()
   }, []);
 
   useEffect(() => {

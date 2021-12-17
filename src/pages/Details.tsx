@@ -157,25 +157,35 @@ const Details = () => {
                 </button>
               </div>
               <div className="w-full mt-4 px-4">
-                <button
-                  disabled={!userC.user}
-                  className="btn btn-block btn-info"
-                  onClick={async () => {
-                    if (userC.user) {
-                      await createPositionRecord(
-                        {
-                          user: userC.user.$id,
-                          latitude: data?.latitude,
-                          longitude: data?.longitude,
-                        },
-                        true
-                      );
-                      toast.success("Tracking point added succesfully");
-                    }
-                  }}
-                >
-                  Track this position
-                </button>
+                {userC.user !== undefined ? (
+                  <button
+                    className="btn btn-block btn-info"
+                    onClick={async () => {
+                      if (userC.user) {
+                        await createPositionRecord(
+                          {
+                            user: userC.user.$id,
+                            latitude: data?.latitude,
+                            longitude: data?.longitude,
+                          },
+                          true
+                        );
+                        toast.success("Tracking point added succesfully");
+                      }
+                    }}
+                  >
+                    Track this position
+                  </button>
+                ) : (
+                  <div
+                    data-tip="You need to sign in to use this functionality"
+                    className="tooltip w-full"
+                  >
+                    <button className="btn btn-block btn-info" disabled>
+                      Track this position
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -19,7 +19,7 @@ const createPositionRecord = async (data: IUserPosition , offlineFallback = fals
     await createDocument(
       USER_POSITION_COLLECTION,
       data,
-      ["role:member"],
+      ["*"],
       ["role:member"]
     );
   } catch (error) {

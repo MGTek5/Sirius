@@ -40,27 +40,16 @@ const Home = () => {
           zoom: 2,
           style: "mapbox://styles/mapbox/dark-v10",
         });
-        IssPosition.current = new mapbox.Marker(marker.current);
-        const lastPosition = await app.database.listDocuments<ISSPosition>(
-          POSITION_COLLECTION,
-          [],
-          1,
-          0,
-          "timestamp",
-          "DESC"
-        );
-        IssPosition.current
-          .setLngLat({
-            lat: lastPosition.documents[0]["latitude"],
-            lon: lastPosition.documents[0]["longitude"],
-          })
-          .addTo(map.current);
-        setCurrentIss(lastPosition.documents[0]);
-        map.current.setCenter({
-          lat: lastPosition.documents[0]["latitude"],
-          lon: lastPosition.documents[0]["longitude"],
-        });
-        setLoading(false);
+          IssPosition.current = new mapbox.Marker(marker.current);
+          const lastPosition = await app.database.listDocuments<ISSPosition>(POSITION_COLLECTION, [], 1, 0, "timestamp", "DESC");
+          IssPosition.current
+            .setLngLat({
+              lat: lastPosition.documents[0]["latitude"],
+              lon: lastPosition.documents[0]["longitude"],
+            })
+            .addTo(map.current);
+          setCurrentIss(lastPosition.documents[0]);
+          setLoading(false);
       }
     };
     initMapAndPositions();
@@ -86,33 +75,27 @@ const Home = () => {
         lon: payload.payload.longitude,
         lat: payload.payload.latitude,
       });
-      map.current?.setCenter({
-        lon: payload.payload.longitude,
-        lat: payload.payload.latitude,
-      });
       setCurrentIss(payload.payload);
     }
   };
 
   useEffect(() => {
-    const getPositions = async () => {
-      const positions = await app.database.listDocuments<UserPosition>(
-        USER_POSITION_COLLECTION,
-        [`user=${userC.user?.$id}`]
-      );
-      positions.documents.forEach((e) => {
-        if (map.current !== undefined) {
-          new mapbox.Marker()
-            .setLngLat({ lat: e.latitude, lon: e.longitude })
-            .addTo(map.current)
-            .getElement().onclick = () => {
-            toast.error("should redirect to location page: not implemented");
-          };
-        }
-      });
-    };
-    if (userC.user) getPositions();
-  }, [userC, map]);
+    const getPositions = async() => {
+      try {
+        const positions = await app.database.listDocuments<UserPosition>(USER_POSITION_COLLECTION, [`user=${userC.user?.$id}`])
+        positions.documents.forEach((e) => {
+          if (map.current !== undefined) {
+            new mapbox.Marker().setLngLat({lat:e.latitude, lon:e.longitude}).addTo(map.current).getElement().onclick = () => {
+              toast.error("should redirect to location page: not implemented")
+            }
+          }
+        })
+      } catch (error) {
+        console.log("could not get user position")
+      }
+    }
+    if (userC.user !== undefined) getPositions()
+  }, [userC, map])
 
   return (
     <div className="h-full w-full">

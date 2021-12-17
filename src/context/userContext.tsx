@@ -3,7 +3,7 @@ import { Models } from "appwrite";
 
 export interface UserContextInterface {
   user: Models.User<Models.Preferences> | undefined;
-  setUser: (_u: Models.User<Models.Preferences>) => void;
+  setUser: (_u: Models.User<Models.Preferences> | undefined) => void;
   askForPermission: () => void;
   logout: () => void;
 }

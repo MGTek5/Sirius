@@ -1,7 +1,7 @@
 const Footer = () => {
 	return (
 
-<footer className="items-center p-4 footer bg-neutral text-neutral-content">
+<footer className="items-center footer bg-neutral text-neutral-content">
   <div className="items-center grid-flow-col">
   <img src="/icons/icon-512x512.png" className="h-12 w-12 self-center mb-2" alt="logo"/>
 

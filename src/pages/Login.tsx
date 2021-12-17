@@ -28,7 +28,7 @@ const Login = () => {
     onSubmit: async values => {
       try {
         await app.account.createSession (values.email, values.password);
-        const u = await app.account.get ();
+        const u = await app.account.get();
         userC.setUser (u);
         toast.success (`Welcome to Sirius, ${u.name}`);
         history.push ('/');
@@ -159,7 +159,7 @@ const Login = () => {
             </svg>
             Github
           </button>
-          <div className="text-right">
+          <div className="text-right mt-2">
             <Link to="/register">Or create an account</Link>
           </div>
         </div>

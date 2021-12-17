@@ -5,6 +5,7 @@ import { useBooleanState, usePrevious } from "webrix/hooks";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import userContext from "./context/userContext";
+import { hasInternetContext } from "./context/hasInternetContext";
 import "./index.css";
 import Router from "./Router";
 import { app } from "./utils/appwrite";
@@ -31,8 +32,6 @@ declare global {
     sync: SyncEvent;
   }
 }
-
-
 
 function App() {
   const [user, setUser] = useState<Models.User<Models.Preferences>>();
@@ -61,7 +60,10 @@ function App() {
         userVisibleOnly: true,
         applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
       });
-      app.functions.createExecution(CREATE_PUSH_FUNCTION, JSON.stringify({key: JSON.stringify(data.toJSON())}))
+      app.functions.createExecution(
+        CREATE_PUSH_FUNCTION,
+        JSON.stringify({ key: JSON.stringify(data.toJSON()) })
+      );
     } catch (e) {
       toast.error("Could not enable push notifications");
       console.error(e);
@@ -79,15 +81,14 @@ function App() {
     window.location.reload();
   };
 
-
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       serviceWorkerRegistration.register({ onUpdate: onServiceWorkerUpdate });
       navigator.serviceWorker.ready.then((registration) => {
         registration.sync.register("syncUserPositions").then(() => {
-          console.info("Background Sync for userPosition is enabled")
-        })
-      })
+          console.info("Background Sync for userPosition is enabled");
+        });
+      });
     }
   });
 
@@ -144,37 +145,42 @@ function App() {
           },
         }}
       >
-        <Toaster />
-        <BrowserRouter>
-          <Header />
-          {newVersionAvailable && (
-            <div className="alert alert-info">
-              <div className="flex-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="w-6 h-6 mx-2 stroke-current"
+        <hasInternetContext.Provider value={{ hasInternet: online }}>
+          <Toaster />
+          <BrowserRouter>
+            <Header />
+            {newVersionAvailable && (
+              <div className="alert alert-info">
+                <div className="flex-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="w-6 h-6 mx-2 stroke-current"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <label>A new version of this application is available.</label>
+                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={updateServiceWorker}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-                <label>A new version of this application is available.</label>
+                  Reload
+                </button>
               </div>
-              <button className="btn btn-primary" onClick={updateServiceWorker}>
-                Reload
-              </button>
-            </div>
-          )}
-          <main>
-            <Router />
-          </main>
-          <Footer />
-        </BrowserRouter>
+            )}
+            <main>
+              <Router />
+            </main>
+            <Footer />
+          </BrowserRouter>
+        </hasInternetContext.Provider>
       </userContext.Provider>
     </div>
   );

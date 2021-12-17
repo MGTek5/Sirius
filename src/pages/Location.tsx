@@ -16,22 +16,18 @@ const Location = () => {
     const history = useHistory();
     const map = useRef<mapbox.Map>();
     const userC = useContext(userContext);
-    const mapContainer = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState<UserPosition | undefined>(undefined);
     const [loading, setLoading] = useState(true);
+    const mapContainer = useRef<HTMLDivElement>(null);
     mapbox.accessToken = MAPBOX_TOKEN;
 
     useEffect(() => {
-        const getPositions = async () => {
+        const Positions = async () => {
             try {
-                const positions = await app.database.getDocument<UserPosition>(USER_POSITION_COLLECTION, idlocation)
-                console.log(positions);
-                if (map.current !== undefined) {
-                    new mapbox.Marker().setLngLat({ lat: positions.latitude, lon: positions.longitude }).addTo(map.current);
-                    map.current?.setCenter({
-                        lon: positions.longitude,
-                        lat: positions.latitude,
-                    });
-                }
+                const res = await app.database.getDocument<UserPosition>(USER_POSITION_COLLECTION, idlocation)
+                setPosition(res);
+                console.log(res);
+                console.log(userC.user);
                 setLoading(false);
             } catch (error) {
                 console.error(error);
@@ -41,8 +37,21 @@ const Location = () => {
                 setLoading(false);
             }
         }
+        if (userC.user && !position) Positions()
+    })
+
+    useEffect(() => {
+        const getPositions = () => {
+                if (map.current !== undefined && position) {
+                    new mapbox.Marker().setLngLat({ lat: position.latitude, lon: position.longitude }).addTo(map.current);
+                    map.current?.setCenter({
+                        lon: position.longitude,
+                        lat: position.latitude,
+                    });
+                }
+        }
         if (userC.user) getPositions()
-    }, [userC, map])
+    }, [userC, map, position])
 
     useEffect(() => {
         if (map.current) return;
@@ -75,6 +84,7 @@ const Location = () => {
                                     toast.success("Delete position");
                                 }}
                             className={`btn btn-primary btn-block`}
+                            disabled={userC.user?.$id !== position?.user}
                         >
                             Delete Position
                         </button>

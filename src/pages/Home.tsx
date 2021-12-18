@@ -10,7 +10,6 @@ import {
 import { useHistory } from "react-router";
 import LoadingScreen from "../components/LoadingScreen";
 import userContext from "../context/userContext";
-import toast from "react-hot-toast";
 import { useHasInternet } from "../context/hasInternetContext";
 
 const Home = () => {
@@ -108,7 +107,7 @@ const Home = () => {
       }
     };
     if (userC.user !== undefined) getPositions();
-  }, [userC, map]);
+  }, [userC, map, history]);
 
   return (
     <div className="h-full w-full">

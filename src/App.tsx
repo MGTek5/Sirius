@@ -10,7 +10,7 @@ import "./index.css";
 import Router from "./Router";
 import { app } from "./utils/appwrite";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import { CREATE_PUSH_FUNCTION } from "./utils/constants";
+import { CREATE_PUSH_FUNCTION, PUBLIC_VAPID_KEY } from "./utils/constants";
 import { Models } from "appwrite";
 
 interface SyncManager {
@@ -58,7 +58,7 @@ function App() {
       }
       const data = await serviceWorker.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: process.env.REACT_APP_PUBLIC_VAPID,
+        applicationServerKey: PUBLIC_VAPID_KEY,
       });
       app.functions.createExecution(
         CREATE_PUSH_FUNCTION,
@@ -95,12 +95,11 @@ function App() {
   useEffect(() => {
     const getAccount = async () => {
       try {
-        const account = await app.account.get()
+        const account = await app.account.get();
         setUser(account);
         localStorage.setItem("sirius_user", JSON.stringify(account));
-
-      } catch(err) {
-        console.log(err)
+      } catch (err) {
+        console.log(err);
         if (!navigator.onLine && localStorage.getItem("sirius_user")) {
           setUser(JSON.parse(localStorage.getItem("sirius_user") ?? ""));
         } else {
@@ -108,8 +107,8 @@ function App() {
           setUser(undefined);
         }
       }
-    }
-    getAccount()
+    };
+    getAccount();
   }, []);
 
   useEffect(() => {

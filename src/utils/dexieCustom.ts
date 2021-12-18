@@ -4,7 +4,7 @@ export class SiriusDexie extends Dexie {
 	positions!: Dexie.Table<IPositions, number>;
 
 	constructor() {
-		super("SiriusDB");
+		super("");
 		this.version(1).stores({
 			positions: `++id, user, latitude, longitude`
 		})

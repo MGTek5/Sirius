@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import SignOut from "./pages/SignOut";
 import TrackMe from "./pages/TrackMe";
+import Location from "./pages/Location";
 
 
 interface IProtectedRouteProps {
@@ -52,6 +53,7 @@ const Router = () => {
       <Route path="/details/:timestamp" exact={true} component={Details} />
       <Route path="/register" exact={true} component={Register} />
       <Route path="/login" exact={true} component={Login} />
+      <Route path="/location/:idlocation" exact={true} component={Location} />
     </Switch>
   );
 };

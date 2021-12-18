@@ -150,7 +150,7 @@ const Location = () => {
                 history.push("/");
                 toast.success("Delete position");
               }}
-              className={`btn btn-primary btn-block`}
+              className={`btn btn-primary btn-block mt-5 lg:mt-0`}
               disabled={userC.user?.$id !== position?.user}
             >
               Delete Position
